@@ -1,0 +1,39 @@
+RewriteEngine On
+
+# Безопасность - запрет доступа к敏感 файлам
+<Files ~ "\.(env|json|config.js|md|gitignore|gitattributes|lock|sql)$">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "^(composer\.json|composer\.lock|package\.json|package-lock\.json)$">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Запрет доступа к папкам
+<Files "config/">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "models/">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "sql/">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Перенаправление всех запросов на index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Заголовки безопасности
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+Header always set Strict-Transport-Security "max-age=31536000"
